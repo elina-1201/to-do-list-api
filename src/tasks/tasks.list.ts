@@ -1,8 +1,4 @@
-export interface Task {
-    id: number;
-    title: string;
-    done: boolean;
-}
+import { Task } from "./dto/task.dto";
 
 export const tasks: Task[] = [
     { id: 1, title: 'Task 1', done: false },
