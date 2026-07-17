@@ -11,14 +11,14 @@ Simple CRUD API written in [NestJS](https://nestjs.com/)
 | **U**pdate | `PUT` | `PUT /tasks/3` | Change task 3 |
 | **D**elete | `DELETE` | `DELETE /tasks/3` | Remove task 3 |
 
-# Getting Started
-## Prerequisites:
+## Getting Started
+### Prerequisites:
 
 - Node.js (v18 or higher)
 - npm / yarn / pnpm
 - Nest CLI (optional, for scaffolding): `npm i -g @nestjs/cli`
 
-## Run the project:
+### Run the project:
 
 ``` bash
 $ npm install

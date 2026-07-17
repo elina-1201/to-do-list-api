@@ -15,8 +15,8 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return endpoints"', () => {
+      expect(appController.getEndPoints()).toEqual({ name: 'Task API', version: 1.0, endpoints: ['/tasks'] });
     });
   });
 });
