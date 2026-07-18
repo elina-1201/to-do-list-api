@@ -14,7 +14,7 @@ async function bootstrap() {
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  SwaggerModule.setup('docs', app, documentFactory);
   // ################## Swagger setup #####################################
 
   // ###### Validation setup ##############
