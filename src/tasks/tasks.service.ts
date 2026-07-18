@@ -1,11 +1,12 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { PaginationDto } from './dto/pagination.dto';
 import { Task } from './dto/task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { tasks } from './tasks.list';
 
 @Injectable()
 export class TasksService {
-    getTasks(status?: boolean, search?: string): Task[] {
+    getTasks(status?: boolean, search?: string, paginationDto?: PaginationDto): Task[] {
         let result = tasks;
 
         if (status !== undefined) {
@@ -14,6 +15,13 @@ export class TasksService {
 
         if (search) {
             result = result.filter(task => task.title.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
+        }
+
+        if (paginationDto) {
+            const { limit, offset } = paginationDto;
+            if (limit !== undefined) {
+                result = result.slice(offset, offset + limit);
+            }
         }
 
         return result;

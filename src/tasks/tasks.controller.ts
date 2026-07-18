@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { PaginationDto } from './dto/pagination.dto';
 import { Task } from './dto/task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { ApiTaskCreate, ApiTaskDelete, ApiTaskList, ApiTaskSingle, ApiTaskUpdate } from './tasks-api.decorator';
@@ -11,10 +12,14 @@ export class TasksController {
 
     @Get()
     @ApiTaskList()
-    getTasks(@Query('done') status?: string, @Query('search') search?: string): Task[] {
+    getTasks(
+        @Query() paginationDto: PaginationDto,
+        @Query('done') status?: string,
+        @Query('search') search?: string): Task[] {
+
         const statusFilter =
             status === undefined || status === '' ? undefined : status === 'true';
-        return this.tasksService.getTasks(statusFilter, search);
+        return this.tasksService.getTasks(statusFilter, search, paginationDto);
     }
 
     @Get(':id')

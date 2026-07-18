@@ -59,3 +59,10 @@ Keep-Alive: timeout=5
 
 **POST `/tasks` endpoint:**
 ![swagger POST endpoint overview](./images/swagger_post_overview.png)
+
+## Pagination
+
+**Example:**
+`GET /tasks?limit=2&offset=2`
+
+Since the project does not use a database, pagination is implemented in memory by slicing the task array.  Database-backed APIs, by contrast, typically paginate on the backend by fetching records from the database in chunks, which saves resources and reduces loading times.
