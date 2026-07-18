@@ -8,42 +8,37 @@ import { TasksService } from './tasks.service';
 
 @Controller('tasks')
 export class TasksController {
-    constructor(private readonly tasksService: TasksService) { }
+  constructor(private readonly tasksService: TasksService) { }
 
-    @Get()
-    @ApiTaskList()
-    getTasks(
-        @Query() paginationDto: PaginationDto,
-        @Query('done') status?: string,
-        @Query('search') search?: string): Task[] {
+  @Get()
+  @ApiTaskList()
+  getTasks(
+    @Query() paginationDto: PaginationDto): Task[] {
+    return this.tasksService.getTasks(paginationDto);
+  }
 
-        const statusFilter =
-            status === undefined || status === '' ? undefined : status === 'true';
-        return this.tasksService.getTasks(statusFilter, search, paginationDto);
-    }
+  @Get(':id')
+  @ApiTaskSingle()
+  getTaskById(@Param('id', ParseIntPipe) id: number): Task {
+    return this.tasksService.getTaskById(id);
+  }
 
-    @Get(':id')
-    @ApiTaskSingle()
-    getTaskById(@Param('id', ParseIntPipe) id: number): Task {
-        return this.tasksService.getTaskById(id);
-    }
+  @Post()
+  @ApiTaskCreate()
+  createTask(@Body() createTaskDto: CreateTaskDto): Task {
+    return this.tasksService.createTask(createTaskDto.title);
+  }
 
-    @Post()
-    @ApiTaskCreate()
-    createTask(@Body() createTaskDto: CreateTaskDto): Task {
-        return this.tasksService.createTask(createTaskDto.title);
-    }
+  @Put(':id')
+  @ApiTaskUpdate()
+  updateTask(@Param('id', ParseIntPipe) id: number, @Body() updateTaskDto: UpdateTaskDto): Task {
+    return this.tasksService.updateTask(id, updateTaskDto);
+  }
 
-    @Put(':id')
-    @ApiTaskUpdate()
-    updateTask(@Param('id', ParseIntPipe) id: number, @Body() updateTaskDto: UpdateTaskDto): Task {
-        return this.tasksService.updateTask(id, updateTaskDto);
-    }
-
-    @Delete(':id')
-    @HttpCode(HttpStatus.NO_CONTENT)
-    @ApiTaskDelete()
-    deleteTask(@Param('id', ParseIntPipe) id: number) {
-        this.tasksService.deleteTask(id);
-    }
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiTaskDelete()
+  deleteTask(@Param('id', ParseIntPipe) id: number) {
+    this.tasksService.deleteTask(id);
+  }
 }

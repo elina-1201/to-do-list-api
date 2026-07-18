@@ -6,22 +6,20 @@ import { tasks } from './tasks.list';
 
 @Injectable()
 export class TasksService {
-    getTasks(status?: boolean, search?: string, paginationDto?: PaginationDto): Task[] {
+    getTasks(paginationDto?: PaginationDto): Task[] {
         let result = tasks;
+        const { limit, offset = 0, done, search } = paginationDto || {};
 
-        if (status !== undefined) {
-            result = result.filter(task => task.done === status);
+        if (done !== undefined) {
+            result = result.filter(task => task.done === done);
         }
 
         if (search) {
             result = result.filter(task => task.title.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
         }
 
-        if (paginationDto) {
-            const { limit, offset } = paginationDto;
-            if (limit !== undefined) {
-                result = result.slice(offset, offset + limit);
-            }
+        if (limit !== undefined) {
+            result = result.slice(offset, offset + limit);
         }
 
         return result;
