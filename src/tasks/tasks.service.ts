@@ -5,8 +5,18 @@ import { tasks } from './tasks.list';
 
 @Injectable()
 export class TasksService {
-    getTasks(): Task[] {
-        return tasks;
+    getTasks(status?: boolean, search?: string): Task[] {
+        let result = tasks;
+
+        if (status !== undefined) {
+            result = result.filter(task => task.done === status);
+        }
+
+        if (search) {
+            result = result.filter(task => task.title.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
+        }
+
+        return result;
     }
 
     getTaskById(id: number): Task {
