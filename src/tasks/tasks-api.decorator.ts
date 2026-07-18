@@ -1,5 +1,5 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiConflictResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiConflictResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import { Task } from './dto/task.dto';
 
 export function ApiTaskList() {
@@ -19,5 +19,20 @@ export function ApiTaskCreate() {
     return applyDecorators(
         ApiCreatedResponse({ type: Task, description: 'The created task' }),
         ApiConflictResponse({ description: 'Task with the same title already exists' })
+    );
+}
+
+export function ApiTaskUpdate() {
+    return applyDecorators(
+        ApiOkResponse({ type: Task, description: 'The updated task' }),
+        ApiNotFoundResponse({ description: 'Task not found' }),
+        ApiConflictResponse({ description: 'Task with the same title already exists' })
+    );
+}
+
+export function ApiTaskDelete() {
+    return applyDecorators(
+        ApiNoContentResponse({ description: 'Task deleted successfully' }),
+        ApiNotFoundResponse({ description: 'Task not found' }),
     );
 }
