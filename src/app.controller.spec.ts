@@ -15,8 +15,16 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return API information', () => {
+      const info = appController.getInfo();
+      expect(info.name).toBe('To-Do List API');
+      expect(Array.isArray(info.endpoints)).toBe(true);
+    });
+  });
+
+  describe('health', () => {
+    it('should return ok status', () => {
+      expect(appController.getHealth()).toEqual({ status: 'ok' });
     });
   });
 });

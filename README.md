@@ -1,44 +1,172 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# To-Do List API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A backend CRUD API for managing to-do tasks, built with [NestJS](https://nestjs.com/).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Tasks are stored **in memory** (a simple array) — there is **no database**. The
+store is seeded with three predefined tasks on startup and can be reset at any
+time. The API is fully type-safe, validates incoming data, and ships with a
+Swagger UI for interactive documentation.
 
-## Description
+## Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Full CRUD over an in-memory task list (`GET`, `POST`, `PUT`, `DELETE`)
+- Three predefined seed tasks (`Task 1`, `Task 2`, `Task 3`)
+- New tasks get `done: false` and an auto-incremented `id`
+- Optional **pagination**, **search by title**, and **filter by `done`** status
+- Convenient HTTP status codes (`201` create, `204` delete, `404` not found, …)
+- Global `ValidationPipe` with implicit transform (query/body coercion + validation)
+- `/reset` endpoint to restore the initial task list
+- `/stats` endpoint returning `{ total, done, open }`
+- `/health` health-check endpoint
+- `/` root endpoint returning endpoint info as JSON
+- Swagger UI at `/api/docs` with request & response schemas
+- Type-safe code throughout (strict TypeScript)
 
-## Project setup
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) (v18 or newer)
+- [pnpm](https://pnpm.io/) (or use `npm`/`yarn` — adjust scripts accordingly)
+
+## Getting Started
+
+Install dependencies:
 
 ```bash
-$ pnpm install
+pnpm install
 ```
 
-## Compile and run the project
+Run the development server (with hot reload):
 
 ```bash
-# development
-$ pnpm run start
+pnpm start:dev
+```
 
-# watch mode
-$ pnpm run start:dev
+Or build and run the production build:
+
+```bash
+pnpm build
+pnpm start:prod
+```
+
+The server listens on `http://localhost:3000` by default. Override the port with
+the `PORT` environment variable, e.g. `PORT=3100 pnpm start:prod`.
+
+## Available Scripts
+
+| Script             | Description                              |
+| ------------------ | ---------------------------------------- |
+| `pnpm start`       | Start the app                           |
+| `pnpm start:dev`   | Start with watch mode (hot reload)       |
+| `pnpm start:prod`  | Run the compiled production build        |
+| `pnpm build`       | Compile the TypeScript project           |
+| `pnpm lint`        | Lint and auto-fix with ESLint            |
+| `pnpm test`        | Run unit tests with Jest                 |
+| `pnpm test:e2e`    | Run end-to-end tests                     |
+
+## API Reference
+
+Base URL: `http://localhost:3000`
+
+### Task model
+
+```json
+{ "id": "1", "title": "Task 1", "done": false }
+```
+
+### Endpoints
+
+| Method   | Path             | Description                                              | Success code |
+| -------- | ---------------- | -------------------------------------------------------- | ------------ |
+| `GET`    | `/`              | Returns API information and available endpoints (JSON)   | `200`        |
+| `GET`    | `/health`        | Health check                                            | `200`        |
+| `GET`    | `/tasks`         | List tasks (supports `page`, `limit`, `search`, `done`)   | `200`        |
+| `GET`    | `/tasks/stats`   | Returns `{ total, done, open }`                          | `200`        |
+| `GET`    | `/tasks/reset`   | Reset the task list to its initial state                 | `200`        |
+| `GET`    | `/tasks/:id`     | Get a single task by id                                  | `200`        |
+| `POST`   | `/tasks`         | Create a new task (body: `{ "title": "..." }`)           | `201`        |
+| `PUT`    | `/tasks/:id`     | Update a task (body: `{ "title"?, "done"? }`)            | `200`        |
+| `DELETE` | `/tasks/:id`     | Delete a task                                           | `204`        |
+
+All error responses return a JSON body with `statusCode`, `error`, and `message`
+(e.g. `404` when a task is not found, `400` on validation failure).
+
+### Query parameters for `GET /tasks` (all optional)
+
+| Param    | Type    | Description                                              |
+| -------- | ------- | -------------------------------------------------------- |
+| `page`   | number  | 1-based page number (default `1`)                        |
+| `limit`  | number  | Items per page (default `10`)                            |
+| `search` | string  | Case-insensitive substring match against the title       |
+| `done`   | boolean | Filter by completion status (`true` / `false`)           |
+
+### Examples
+
+```bash
+# List all tasks (paginated)
+curl http://localhost:3000/tasks
+
+# Search + filter + paginate
+curl "http://localhost:3000/tasks?search=Task&done=false&page=1&limit=2"
+
+# Create a task
+curl -X POST http://localhost:3000/tasks \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"Buy milk"}'
+
+# Update a task
+curl -X PUT http://localhost:3000/tasks/1 \
+  -H 'Content-Type: application/json' \
+  -d '{"done":true}'
+
+# Delete a task
+curl -X DELETE http://localhost:3000/tasks/1
+
+# Stats and reset
+curl http://localhost:3000/tasks/stats
+curl http://localhost:3000/tasks/reset
+```
+
+## API Documentation (Swagger)
+
+Interactive Swagger UI is available at:
+
+```
+http://localhost:3000/api/docs
+```
+
+It documents every endpoint along with request and response schemas.
+
+## Project Structure
+
+```
+src/
+├── app.controller.ts        # Root info (/) and health (/health)
+├── app.service.ts           # App info + health logic
+├── app.module.ts            # Root module
+├── main.ts                  # Bootstrap, ValidationPipe, Swagger setup
+└── tasks/
+    ├── tasks.module.ts      # Tasks feature module
+    ├── tasks.controller.ts  # Task CRUD + stats + reset endpoints
+    ├── tasks.service.ts     # In-memory store & business logic
+    ├── task.model.ts        # Task entity + initial seed data
+    └── dto/
+        ├── create-task.dto.ts     # POST body validation
+        ├── update-task.dto.ts     # PUT body validation
+        ├── query-task.dto.ts      # GET query validation
+        └── paginated-tasks.dto.ts # List response envelope
+```
+
+## Notes
+
+- Data is **not persisted** — restarting the server restores the three seed
+  tasks. Use `GET /tasks/reset` to reset the list at runtime.
+- The project uses strict TypeScript and `class-validator` / `class-transformer`
+  for runtime validation of all client-supplied input.
+
+## License
+
+UNLICENSED
+
 
 # production mode
 $ pnpm run start:prod
