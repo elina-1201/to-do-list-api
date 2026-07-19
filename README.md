@@ -55,7 +55,7 @@ Keep-Alive: timeout=5
 
 ### Swagger UI:
 **All endpoints and schemas:**
-![swagger overview](./images/swagger_overview.png)
+![swagger overview](./images/swagger_overview_new.png)
 
 **POST `/tasks` endpoint:**
 ![swagger POST endpoint overview](./images/swagger_post_overview.png)
